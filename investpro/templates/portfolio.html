@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="investment-class">
+<p>Balance : {{investor.balance}}</p>
+
+{% for investment, stockPrice in investments.items %}
+<a href="stocks/{{investment.stock.symbol}}">{{investment.stock.companyName}}</a> 
+{{investment.n_shares}} shares
+{{investment.avg_price}}
+
+<div class="deets">
+
+{% if stockPrice.1 > stockPrice.2 %}
+
+<div class="profit">
+CurrentPrice {{stockPrice.0}}
+<br>
+current {{stockPrice.1}}
+<br>
+invested {{stockPrice.2}}
+</div>
+
+{% else %}
+
+<div class="loss">
+    CurrentPrice {{stockPrice.0}}
+    <br>
+    current {{stockPrice.1}}
+    <br>
+    invested {{stockPrice.2}}
+</div>
+
+{% endif %}
+
+
+</div>
+<br>
+<hr>
+
+
+{% endfor %}
+
+</div>
+
+<style type="text/css">
+
+    .investment-class{
+        margin:auto;
+        width: 60%;
+    }
+    .deets{
+        font-size: small;
+    }
+
+    .profit{
+        background-color: beige;
+        color: rgb(69, 133, 5);
+        border: 5px solid rgb(127, 245, 8);
+    }
+
+    .loss{
+        background-color: beige;
+        color: rgb(236, 37, 37);
+        border: 5px solid rgb(236, 37, 37);
+    }
+</style>
+
+{% endblock %}
+
+<!-- in stockPrice, the 0th element is the price and the 1st element is the price*n_shares(current amount)  in the 2nd element avg_price * n_shares(invested amount) -->

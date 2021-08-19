@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+
+
+<br>
+<br>
+
+{% block content %}
+
+<br>
+<br>
+<br>
+
+Buy {{stock.companyName}} shares
+<br>
+Price : {{price}}
+
+<div class="form-group">
+    <form method="POST">
+        {% csrf_token %}
+    <label>Shares {{stock.companyName}}</label>
+    <input type="text" name="shares"/>
+    <input type="submit">
+</form>
+</div>
+{% endblock %}

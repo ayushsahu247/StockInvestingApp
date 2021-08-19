@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>All orders by {{user.username|title}}</h3>
+
+
+<br>
+<br>
+{% for record in records %}
+<li>{{record.message}}</li>
+<hr>
+
+{%endfor%}
+
+<style>
+    li{
+        line-height: 1.6em;
+        text-align: left;
+    }
+</style>
+
+
+{% endblock %}

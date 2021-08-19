@@ -1,0 +1,80 @@
+{% load static %}
+
+
+<div class="container">
+
+
+
+    <h2>InvestApp </h2><h4>Your own investing App</h4>
+
+
+<nav>
+    <h4 class="left"><a href="{% url 'all-stocks'%}">All Stocks</a></h4>
+
+
+    {% if user.is_authenticated %}
+<h1>Hello {{user.username}}</h1>
+{% else %} 
+<h1>Login to gain access</h1>
+{% endif %}
+    {% if user.is_authenticated %}
+
+    <div class="right">
+        <a href="/notifications">Notifications</a>
+        <a href="{% url 'portfolio' %}">Portfolio</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+    {% else %}
+    <div class="right">
+        <h4><a href="{% url 'login' %}">Login</a></h4>
+        <h4> <a href="{% url 'register' %}">Signup</a> </h4>
+    </div>
+    {% endif %}
+    
+</nav>
+
+
+{%block content%}
+{%endblock%}
+
+</div>
+
+<style type="text/css">
+
+    .container{
+        font-family: Helvetica;
+        text-align: center;
+        width: 80%;
+        margin: auto;
+        background-color: rgb(153, 198, 248);
+    }
+
+    header{
+        background-color: rgb(162, 180, 212);
+        float: left;
+        padding-left: 10px;
+    }
+
+
+    h4{
+        color: black;
+        padding: 5px;
+    }
+
+    h2{
+        color: black;
+        padding: 5px;
+    }
+
+    .left{
+        float: left;
+    }
+
+    .right{
+        margin: auto 10px;
+        padding: 10px;
+        float:right;
+    }
+
+</style>
+

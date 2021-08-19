@@ -1,0 +1,76 @@
+{%extends 'base.html'%}
+{%load static%}
+
+{%block content%}
+
+
+
+
+
+<section>
+<div class="top-movers">
+
+
+<h2>Top Gainers</h2>
+{% for stock in top_gainers %}
+<div class="gainers">
+<a href="/stocks/{{stock.0}}">
+<h6>{{stock.0}}</h6>
+<small>{{stock.2}}</small>
+</div></a>
+{% endfor %}
+</section>
+<hr>
+<br>
+<br>
+
+<h2>Top Losers</h2>
+{% for stock in top_losers %}
+<div class="losers">
+<a href="/stocks/{{stock.0}}">
+<h4>{{stock.0}}</h2>
+<small>{{stock.1}}</small>
+<small>{{stock.2}}</small>
+</a>
+</div>
+{% endfor %}
+
+
+</div>
+
+
+<style type="text/css">
+
+    h2{
+        text-align: center;
+    }
+
+    .top-movers{
+        margin: auto;
+        width:60%;
+        height: 50%;
+    }
+    .gainers{
+
+     
+        background-color: cornsilk;
+        border: 5px solid green;
+        padding: 20px;
+        margin-right: 10px;
+        float: left;
+        box-sizing: border-box;
+
+    }
+
+
+    .losers{
+        background-color: cornsilk;
+        border: 5px solid red;
+        padding: 20px;
+        margin-right: 10px;
+        float: left;
+        box-sizing: border-box;
+        }
+</style>
+
+{%endblock%}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="info">
+    <h2> {{stock.companyName}} </h2>
+    <h4> {{stock.symbol}} </h4>
+</div>
+
+
+<a href="/stocks/{{stock.symbol}}/buy"> <button>Buy</button> </a> 
+<br>
+<a href="/stocks/{{stock.symbol}}/sell"> <button>Sell</button> </a> 
+
+
+
+
+{% endblock %}
+
