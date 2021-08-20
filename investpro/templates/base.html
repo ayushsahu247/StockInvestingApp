@@ -3,20 +3,20 @@
 
 <div class="container">
 
-
-
     <h2>InvestApp </h2><h4>Your own investing App</h4>
 
 
 <nav>
-    <h4 class="left"><a href="{% url 'all-stocks'%}">All Stocks</a></h4>
+    <a href="{% url 'all-stocks'%}">All Stocks</a>
+    <a href="{% url 'home'%}">Home</a>
+
 
 
     {% if user.is_authenticated %}
-<h1>Hello {{user.username}}</h1>
-{% else %} 
-<h1>Login to gain access</h1>
-{% endif %}
+        <h1>Hello {{user.username}}</h1>
+    {% else %} 
+        <h1>Login to gain access</h1>
+    {% endif %}
     {% if user.is_authenticated %}
 
     <div class="right">

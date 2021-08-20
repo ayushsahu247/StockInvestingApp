@@ -4,73 +4,101 @@
 {%block content%}
 
 
-
-
-
 <section>
 <div class="top-movers">
 
-
 <h2>Top Gainers</h2>
-{% for stock in top_gainers %}
 <div class="gainers">
+{% for stock in top_gainers %}
 <a href="/stocks/{{stock.0}}">
+<div class="gainer">
 <h6>{{stock.0}}</h6>
-<small>{{stock.2}}</small>
+<small>{{stock.2}}</small><br>
+<div class="uniformer">--------------</div>
 </div></a>
 {% endfor %}
-</section>
-<hr>
-<br>
-<br>
+</div>
+
+
 
 <h2>Top Losers</h2>
-{% for stock in top_losers %}
 <div class="losers">
+{% for stock in top_losers %}
 <a href="/stocks/{{stock.0}}">
-<h4>{{stock.0}}</h2>
-<small>{{stock.1}}</small>
-<small>{{stock.2}}</small>
-</a>
-</div>
+<div class="loser">
+<h6>{{stock.0}}</h6>
+<small>{{stock.2}}</small><br>
+<div class="uniformer">--------------</div>
+</div></a>
 {% endfor %}
-
+</div>
 
 </div>
 
-
+</section>
 <style type="text/css">
+
+    .top-movers{
+        width: 60%;
+        font-family: Garamond;
+        display: flex;
+        flex-direction: column;
+    }
+    
 
     h2{
         text-align: center;
     }
 
-    .top-movers{
-        margin: auto;
-        width:60%;
-        height: 50%;
-    }
-    .gainers{
+    .gainers{   
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        color: rgb(69, 134, 5);
+        padding: 20px;
+        border: 5px solid rgb(232, 255, 232);
+        background-color: beige;
+        margin: 5px;
 
-     
+    }
+
+    .gainer{
+        
+        flex: 1;
         background-color: cornsilk;
         border: 5px solid green;
         padding: 20px;
-        margin-right: 10px;
-        float: left;
-        box-sizing: border-box;
+        margin: 5px;
 
     }
 
 
     .losers{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        color: rgb(175, 29, 29);
+        background-color: cornsilk;
+        padding: 20px;
+        margin: 5px;
+        }
+
+    .loser{
+        flex:1;
         background-color: cornsilk;
         border: 5px solid red;
         padding: 20px;
-        margin-right: 10px;
-        float: left;
-        box-sizing: border-box;
-        }
-</style>
+        margin: 5px;
+    }
+
+    .uniformer{
+        color: beige;
+    }
+
+    a{
+        text-decoration: none;
+    }
+
+    </style>
 
 {%endblock%}
