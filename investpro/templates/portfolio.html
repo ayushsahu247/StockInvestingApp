@@ -2,35 +2,47 @@
 
 {% block content %}
 
+<h1><p>Balance : {{investor.balance}}</p></h1>
+<h1>Current Value: {{current_value}} </h1>
+<h2>Invested Value: {{invested_value}} </h2>
+
+<div class="container-investments">
 <div class="investment-class">
-<p>Balance : {{investor.balance}}</p>
 
 {% for investment, stockPrice in investments.items %}
+<div class="investments">
 <a href="stocks/{{investment.stock.symbol}}">{{investment.stock.companyName}}</a> 
 {{investment.n_shares}} shares
 {{investment.avg_price}}
 
 <div class="deets">
 
-{% if stockPrice.1 > stockPrice.2 %}
+{% if stockPrice.1 >= stockPrice.2 %}
 
 <div class="profit">
-CurrentPrice {{stockPrice.0}}
-<br>
-current {{stockPrice.1}}
-<br>
-invested {{stockPrice.2}}
+    <ul>
+        <li>CurrentPrice {{stockPrice.0}}</li>
+        <li>Current Value: {{stockPrice.1}}</li>
+        <li>Invested Value: {{stockPrice.2}}</li>
+    </ul>
+    <a href="stocks/{{investment.stock.symbol}}/buy"><button class="buy">Buy</button></a>
+    <a href="stocks/{{investment.stock.symbol}}/sell"><button class="sell" >Sell</button></a>
+    
 </div>
 
 {% else %}
 
 <div class="loss">
-    CurrentPrice {{stockPrice.0}}
-    <br>
-    current {{stockPrice.1}}
-    <br>
-    invested {{stockPrice.2}}
+    <ul>
+        <li>CurrentPrice {{stockPrice.0}}</li>
+        <li>Current Value: {{stockPrice.1}}</li>
+        <li>Invested Value: {{stockPrice.2}}</li>
+    </ul>
+    <a href="stocks/{{investment.stock.symbol}}/buy"><button class="buy">Buy</button></a>
+<a href="stocks/{{investment.stock.symbol}}/sell"><button class="sell" >Sell</button></a>
+
 </div>
+
 
 {% endif %}
 
@@ -39,17 +51,35 @@ invested {{stockPrice.2}}
 <br>
 <hr>
 
-
+</div>
 {% endfor %}
 
+</div>
 </div>
 
 <style type="text/css">
 
-    .investment-class{
-        margin:auto;
-        width: 60%;
+    .container-investments{
+        display: flex;
+        align-items: center;
     }
+    .investment-class{
+
+        /* margin:auto;
+        
+        margin-left: 30%; */
+        margin-top: 20%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        align-content: center;
+        justify-content: space-evenly;
+    }
+
+    .investments{
+        justify-content: space-evenly;
+    }
+
     .deets{
         font-size: small;
     }
@@ -64,6 +94,16 @@ invested {{stockPrice.2}}
         background-color: beige;
         color: rgb(236, 37, 37);
         border: 5px solid rgb(236, 37, 37);
+    }
+
+    ul{
+        display: flex;
+        justify-content: space-between;
+    }
+    li{
+        font-size: 15px;
+        padding :30px;
+        list-style-type: none;
     }
 </style>
 

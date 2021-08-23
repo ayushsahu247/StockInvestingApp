@@ -7,12 +7,48 @@
 {%for message in messages%}
 <h3>{{message}}</h3>
 {%endfor%}
-<form action="login" method="POST">
-	{% csrf_token %}
-	<p>username:</p>
-	<input type="text" name="username">
-	<p>password:</p>
-	<input type="password" name="password">
-	<input type="submit">
-</form>
+<section id="login-form">
+	<div class="container">
+		<form method="POST" action="">
+			{% csrf_token %}
+			<input type="text" placeholder="Enter Username" name="username">
+			<br>
+			<input type="password" placeholder="Enter Password" name="password">
+			<br>
+			<button type="submit" class="button_1">Login</button>
+		</form>
+	</div>
+</section>
+
+
+<style>
+	#login-form{
+		display: flex;
+		align-content: flex-start;
+		align-items: flex-start	;
+		justify-content: flex-start;
+		padding: 15px;
+		color: #ffffff;
+		background: #35424a;
+	}
+
+	#login-form h1{
+	float: left;
+	}
+
+	#login-form form{
+		float: right;
+		margin-top: 15px;
+	}
+
+	#login-form input[type="email"]{
+		padding: 4px;
+		height: 25px;
+		width: 250px;
+	}
+
+
+
+</style>
+
 {% endblock %}

@@ -12,5 +12,6 @@ urlpatterns = [
     path('stocks/<str:symbol>/sell', views.sell, name='sell'),
     path('stocks/<str:symbol>/', views.stockinfo, name='stockinfo'),
     path('portfolio', views.portfolio, name='portfolio'),
-    path('notifications', views.notifications, name='notifications')
+    path('notifications', views.notifications, name='notifications'),
+    path('profile', views.profile, name='profile'),
 ]

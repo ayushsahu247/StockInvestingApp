@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="profile">
+Username: {{user.username|title}}<br>
+Email: {{user.email}}<br>
+Balance: {{investor.balance}}
+</div>
+
+
+<style>
+    .profile{
+        text-align: start;
+        font-size: 40px;
+    }
+</style>
+{% endblock %}

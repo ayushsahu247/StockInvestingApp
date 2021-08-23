@@ -5,11 +5,15 @@
 <h1>List of Stocks</h1>
 
 {% for key, value in all_stock_codes.items %}
+	<div class="stock">
 	<a href="https://www.google.com/search?q={{key}}-stock-price" target="_blank">{{key}} : {{value}}</a>
 	<br>
+	<br>
+	<br>
 	
-	<a href="stocks/{{key}}/buy"><button>Buy</button></a>	
+	<a href="stocks/{{key}}/buy" class="buy">Buy</a>	
 	<hr>
+	</div>
 {% endfor %}
 
 
@@ -20,10 +24,22 @@
 		margin: 50px;
 		line-height: 3em;
 		font-family: Arial, Helvetica;
+		font-size: 25px;
+		text-align: left;
 	}
 
 	h1{
 		text-align: center;
+	}
+
+	.stock{
+		margin: 30px;
+		text-align: left;
+		padding: 10px;
+	}
+
+	.stock a{
+		margin-bottom: 20px;
 	}
 </style>
 

@@ -7,10 +7,16 @@
     <h4> {{stock.symbol}} </h4>
 </div>
 
-
-<a href="/stocks/{{stock.symbol}}/buy"> <button>Buy</button> </a> 
+{% if investment is none %}
+You do not own shares of this company.
+{% else %}
+You own {{investment.n_shares}} shares of this company at Rs {{investment.avg_price}}
+{% endif %}
 <br>
-<a href="/stocks/{{stock.symbol}}/sell"> <button>Sell</button> </a> 
+
+Current Price : Rs {{price}}<br>
+<a href="/stocks/{{stock.symbol}}/buy"> <button class="buy">Buy</button> </a> 
+<a href="/stocks/{{stock.symbol}}/sell"> <button class="sell">Sell</button> </a> 
 
 
 

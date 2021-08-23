@@ -1,80 +1,196 @@
 {% load static %}
 
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<meta name="description" content="Affordable and professional web design">
+	<meta name="keywords" content="web design, affordable web design, professional web design">
+	<meta name="author" content="Ayush Sahu">
+	<title>InvestApp | Welcome</title>
+	<link rel="stylesheet" type="text/css" href="./css/style.css">
+</head>
+
+<body>
+
+<header>
+    <div class="container">
+        
+        <div class="branding">
+            <h1>InvestApp </h1>
+        </div>  
+        {% if user.is_authenticated %}
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/all-stocks">All Stocks</a></li>
+                    <li><a href="/profile">Profile</a></li>
+                    <li><a href="/portfolio">Portfolio</a></li>
+                    <li><a href="/notifications">Orders</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
+            </nav>
+        {% else %}
+        <nav>
+            <ul>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Signup</a></li>
+            </ul>
+        </nav>
+        {% endif %}
+        
+
+    </div>
+</header>
 
 <div class="container">
-
-    <h2>InvestApp </h2><h4>Your own investing App</h4>
-
-
-<nav>
-    <a href="{% url 'all-stocks'%}">All Stocks</a>
-    <a href="{% url 'home'%}">Home</a>
-
-
-
-    {% if user.is_authenticated %}
-        <h1>Hello {{user.username}}</h1>
-    {% else %} 
-        <h1>Login to gain access</h1>
-    {% endif %}
-    {% if user.is_authenticated %}
-
-    <div class="right">
-        <a href="/notifications">Notifications</a>
-        <a href="{% url 'portfolio' %}">Portfolio</a>
-        <a href="{% url 'logout' %}">Logout</a>
-    </div>
-    {% else %}
-    <div class="right">
-        <h4><a href="{% url 'login' %}">Login</a></h4>
-        <h4> <a href="{% url 'register' %}">Signup</a> </h4>
-    </div>
-    {% endif %}
-    
-</nav>
-
-
+<div class="block">
 {%block content%}
 {%endblock%}
-
 </div>
+</div>
+
+<footer>
+    <p>InvestApp, Copyright &copy; 2021</p>
+</footer>
+
+
+
+</body>
+
 
 <style type="text/css">
 
+    body{
+        font: 15px/1.5 Arial, Helvetica, Garamond;
+	padding: 0;
+	margin: 0;
+	background-color: #ece9e9; 
+    }
+
     .container{
+
+        display: flex;
         font-family: Helvetica;
         text-align: center;
         width: 80%;
-        margin: auto;
-        background-color: rgb(153, 198, 248);
+        justify-content: space-between;
+        align-items: center;  
+        margin: auto; 
+        position: relative;
     }
+
+
 
     header{
-        background-color: rgb(162, 180, 212);
-        float: left;
-        padding-left: 10px;
+	background-color: #35424a;
+	color: #ffffff;
+    border-bottom: #43b420 3px solid;
+
+    }
+
+    header a{
+        color: #4ce81d;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-size: 16px;
     }
 
 
-    h4{
+    header ul{
+        display: flex;
+        flex-direction: row;
+    }
+
+    header li{
+/*        flex-direction: row;*/
+        list-style-type:none;
         color: black;
-        padding: 5px;
+        padding: 0px 20px 0px 20px;
+        margin-top: 5%;
     }
 
-    h2{
+    .branding h1{
+        color: #43b420;
+        float: left;
+        margin-left: 0;
+    }
+
+    .buy{
+        padding: 30px;
+        background: palegreen;
+        margin: 10px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+
+    .sell{
+        padding: 30px;
+        background: palegreen;
+        margin: 10px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    a{
+        text-decoration: none;
         color: black;
-        padding: 5px;
+        font-weight: bold;
     }
 
-    .left{
+    a :hover{
+        color: green;
+    }
+
+
+
+    footer{
+	padding: 20px;
+	margin-top: 20px;
+	color: #ffffff;
+	background-color: #43b420;
+	text-align: center;
+}
+/*
+header #branding h1{
+    font-size: 200;
+	margin: 0;
+    float: left;
+	margin-top:20px; 
+}
+
+header nav{
+	float:right;
+    color: #cccccc;
+	margin-bottom: 30px;
+}
+
+header .highlight, header .current a{
+	color: #e8491d;
+	font-weight: bold;
+    margin-bottom:20px;
+}
+
+
+header a:hover{
+	color: #cccccc;
+	font-weight: bold;
+}
+
+
+    .brand{
         float: left;
     }
 
-    .right{
-        margin: auto 10px;
-        padding: 10px;
-        float:right;
+    nav{
+        float: right;
     }
 
+*/
+    
 </style>
 
+
+</html>
