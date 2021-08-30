@@ -1,3 +1,4 @@
+Stock Investor App - Watch video for demo.
 A stock investing app which has following functionalities-
 1. View all stocks listed on the National Stock Exchange.
 2. View the top gainers and losers of today.
