@@ -2,19 +2,18 @@
 
 
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-Sell {{stock.companyName}} shares
+
 
 {% block content %}
+
+
+Sell {{stock.companyName}} shares
+
+{%for message in messages%}
+message
+{%endfor%}
+
+
 <div class="form-group">
     <form method="POST">
         {% csrf_token %}

@@ -14,4 +14,5 @@ urlpatterns = [
     path('portfolio', views.portfolio, name='portfolio'),
     path('notifications', views.notifications, name='notifications'),
     path('profile', views.profile, name='profile'),
+
 ]

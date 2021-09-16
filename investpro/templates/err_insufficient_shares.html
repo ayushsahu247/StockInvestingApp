@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{%block content%}
+
+<div class="err">Error: Insufficient Shares</div>
+You do not have {{n_sell}} shares in your possession.
+
+
+<style type="text/css">
+    .err{
+        font-size: 20;
+        color: red;
+    }
+</style>
+
+{%endblock%}

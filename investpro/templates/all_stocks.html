@@ -2,44 +2,43 @@
 
 
 {% block content %}
-<h1>List of Stocks</h1>
+<h1>List of NSE Stocks</h1>
 
+
+<div class="stocks">
 {% for key, value in all_stock_codes.items %}
 	<div class="stock">
-	<a href="https://www.google.com/search?q={{key}}-stock-price" target="_blank">{{key}} : {{value}}</a>
-	<br>
-	<br>
-	<br>
-	
-	<a href="stocks/{{key}}/buy" class="buy">Buy</a>	
-	<hr>
+		<a href="https://www.google.com/search?q={{key}}-stock-price" class="info" target="_blank"> <h2>{{key}}</h4><br>{{value}}</a>
+		
+		<a href="stocks/{{key}}/buy" class="buy">Buy</a>	
 	</div>
+	<hr>
 {% endfor %}
-
+</div>
 
 <style type="text/css">
-	body{
-		padding: 50px;
-		border: 50px solid #f4f4f4;
-		margin: 50px;
-		line-height: 3em;
-		font-family: Arial, Helvetica;
-		font-size: 25px;
-		text-align: left;
-	}
 
-	h1{
-		text-align: center;
+	.stocks{
+		margin: auto;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
 	}
 
 	.stock{
+		display: flex;
 		margin: 30px;
 		text-align: left;
 		padding: 10px;
+		justify-content: space-between;
+		align-items: center;
 	}
 
+
+
 	.stock a{
-		margin-bottom: 20px;
+		font-size: 20px;
+		font-family:Verdana, Geneva, Tahoma, sans-serif
 	}
 </style>
 

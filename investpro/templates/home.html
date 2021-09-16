@@ -5,6 +5,9 @@
 
 
 <section>
+<div class="welcome"> <h1>Welcome, {{user.username}}</h1>  </div>
+
+
 <div class="top-movers">
 
 <h2>Top Gainers</h2>
@@ -13,7 +16,7 @@
 <a href="/stocks/{{stock.0}}">
 <div class="gainer">
 <h6>{{stock.0}}</h6>
-<small>{{stock.2}}</small><br>
+<small>{{stock.1}}</small><br>
 <div class="uniformer">--------------</div>
 </div></a>
 {% endfor %}
@@ -27,7 +30,7 @@
 <a href="/stocks/{{stock.0}}">
 <div class="loser">
 <h6>{{stock.0}}</h6>
-<small>{{stock.2}}</small><br>
+<small>{{stock.1}}</small><br>
 <div class="uniformer">--------------</div>
 </div></a>
 {% endfor %}
@@ -38,33 +41,46 @@
 </section>
 <style type="text/css">
 
-
+/* 
     section{
         margin-right: 30%;
         display: flex;
         align-items: flex-end;
-    }
+    } */
 
+    .welcome{
+        font-size: 35px;
+        margin-top: 30px;
+    }
 
     .top-movers{
         font-family: Garamond;
+        font-size: 20px;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        margin-left: 0;
+        margin-top:50px;
+        border:1px solid black;
+        border-radius: 5px;
+        box-shadow: 20px black;
     }
     
 
-    h2{
+    top-movers.h2{
         text-align: center;
+        margin: auto;
     }
 
     .gainers{   
         display: flex;
         flex-direction: row;
         justify-content: space-evenly;
-        color: rgb(69, 134, 5);
+        color: var(--primary-color);
         padding: 20px;
-        border: 5px solid rgb(232, 255, 232);
+        border: 1px solid rgb(232, 255, 232);
+        border-radius: 10px;
+        box-shadow: black;
         background-color: beige;
         margin: 5px;
 
@@ -73,7 +89,9 @@
     .gainer{
         flex: 1;
         background-color: cornsilk;
-        border: 5px solid green;
+        border: 2px solid var(--primary-color);
+        border-radius: 10px;
+        box-shadow: black;
         padding: 20px;
         margin: 5px;
 
@@ -93,7 +111,9 @@
     .loser{
         flex:1;
         background-color: cornsilk;
-        border: 5px solid red;
+        border: 2px solid red;
+        border-radius: 10px;
+        box-shadow: black;
         padding: 20px;
         margin: 5px;
     }

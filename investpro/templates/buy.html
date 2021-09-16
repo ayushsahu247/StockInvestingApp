@@ -2,14 +2,12 @@
 
 
 
-<br>
-<br>
 
 {% block content %}
 
-<br>
-<br>
-<br>
+{%for message in messages%}
+message
+{%endfor%}
 
 Buy {{stock.companyName}} shares
 <br>

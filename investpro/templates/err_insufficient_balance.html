@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{%block content%}
+
+<div class="err">Error: Insufficient Balance</div>
+Balance({{balance}}) is less than expense({{expense}}).
+
+<style type="text/css">
+    .err{
+        font-weight: 500px;
+        font-size: 20;
+        color: red;
+    }
+</style>
+
+{%endblock%}

@@ -61,16 +61,29 @@
 
 
 <style type="text/css">
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200&family=Open+Sans:wght@300&display=swap');
+
+    *{
+        font-family: 'Montserrat', sans-serif;
+        padding: 0;
+        margin: 0;
+    }
+
+    :root{
+        --primary-color: #059669;
+        --secondary-color: #8B5CF6;
+        --bg-color: #ece9e9;
+    }
 
     body{
         font: 15px/1.5 Arial, Helvetica, Garamond;
 	padding: 0;
 	margin: 0;
-	background-color: #ece9e9; 
+	background-color: var(--bg-color) ; 
     }
 
     .container{
-
+        overflow: auto;
         display: flex;
         font-family: Helvetica;
         text-align: center;
@@ -81,20 +94,30 @@
         position: relative;
     }
 
-
+    .block{
+        margin: auto;
+    }
 
     header{
-	background-color: #35424a;
+    display: flex;
+	background-color: var(--primary-color);
 	color: #ffffff;
-    border-bottom: #43b420 3px solid;
+    border-bottom: var(--primary-color) 3px solid;
+    height: 80px;
+    align-items: center;
 
     }
 
     header a{
-        color: #4ce81d;
+        color: white;
         text-decoration: none;
         text-transform: uppercase;
         font-size: 16px;
+    }
+
+    header a:hover{
+        border-bottom: 1px solid white;
+        transform: scale(0.97);
     }
 
 
@@ -106,20 +129,22 @@
     header li{
 /*        flex-direction: row;*/
         list-style-type:none;
-        color: black;
+        color: white;
         padding: 0px 20px 0px 20px;
         margin-top: 5%;
     }
 
     .branding h1{
-        color: #43b420;
+        color: white;
         float: left;
         margin-left: 0;
     }
 
     .buy{
-        padding: 30px;
-        background: palegreen;
+        padding: 15px;
+        border-radius: 10px;
+        background: var(--secondary-color);
+        color: white;
         margin: 10px;
         font-size: 20px;
         font-weight: bold;
@@ -127,8 +152,10 @@
 
 
     .sell{
-        padding: 30px;
-        background: palegreen;
+        padding: 15px;
+        border-radius: 10px;
+        background: var(--secondary-color);
+        color: white;
         margin: 10px;
         font-size: 20px;
         font-weight: bold;
@@ -141,17 +168,24 @@
     }
 
     a :hover{
-        color: green;
+        transform: scale(0.98);
+        cursor: pointer;
     }
 
+    button{
+        cursor: pointer;
+    }
 
 
     footer{
 	padding: 20px;
 	margin-top: 20px;
 	color: #ffffff;
-	background-color: #43b420;
+	background-color: var(--primary-color);
 	text-align: center;
+    bottom: 0;
+    position: fixed;
+    width: 100%;
 }
 /*
 header #branding h1{
