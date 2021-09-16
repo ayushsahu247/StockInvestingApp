@@ -7,7 +7,6 @@ Django==3.2.5
 django-filter==2.4.0
 django-redis==5.0.0
 djangorestframework==3.12.4
-docutils @ file:///tmp/build/80754af9/docutils_1620827983598/work
 gunicorn==20.1.0
 html5lib @ file:///tmp/build/80754af9/html5lib_1593446221756/work
 json5 @ file:///tmp/build/80754af9/json5_1624432770122/work
