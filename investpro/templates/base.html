@@ -18,12 +18,12 @@
     <div class="container">
         
         <div class="branding">
-            <h1>InvestApp </h1>
+            <a href="/"><h1>InvestApp</h1></a>
         </div>  
         {% if user.is_authenticated %}
             <nav>
                 <ul>
-                    <li><a href="/">Home</a></li>
+                    <li><a href="/top-movers">Top Movers</a></li>
                     <li><a href="/all-stocks">All Stocks</a></li>
                     <li><a href="/profile">Profile</a></li>
                     <li><a href="/portfolio">Portfolio</a></li>
@@ -76,7 +76,6 @@
     }
 
     body{
-        font: 15px/1.5 Arial, Helvetica, Garamond;
 	padding: 0;
 	margin: 0;
 	background-color: var(--bg-color) ; 
@@ -103,16 +102,16 @@
 	background-color: var(--primary-color);
 	color: #ffffff;
     border-bottom: var(--primary-color) 3px solid;
-    height: 80px;
+    height: 90px;
     align-items: center;
 
     }
 
-    header a{
+    header nav a{
         color: white;
         text-decoration: none;
         text-transform: uppercase;
-        font-size: 16px;
+        font-size: 12px;
     }
 
     header a:hover{

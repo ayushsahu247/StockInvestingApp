@@ -1,0 +1,131 @@
+{%extends 'base.html'%}
+{%load static%}
+
+{%block content%}
+
+
+<section>
+<div class="welcome"> <h1>Welcome, {{user.username}}</h1>  </div>
+
+
+<div class="top-movers">
+
+<h2>Top Gainers</h2>
+<div class="gainers">
+{% for stock in top_gainers %}
+<a href="/stocks/{{stock.0}}">
+<div class="gainer">
+<h6>{{stock.0}}</h6>
+<small>{{stock.1}}</small><br>
+<div class="uniformer">--------------</div>
+</div></a>
+{% endfor %}
+</div>
+
+
+
+<h2>Top Losers</h2>
+<div class="losers">
+{% for stock in top_losers %}
+<a href="/stocks/{{stock.0}}">
+<div class="loser">
+<h6>{{stock.0}}</h6>
+<small>{{stock.1}}</small><br>
+<div class="uniformer">--------------</div>
+</div></a>
+{% endfor %}
+</div>
+
+</div>
+
+</section>
+<style type="text/css">
+
+/* 
+    section{
+        margin-right: 30%;
+        display: flex;
+        align-items: flex-end;
+    } */
+
+    .welcome{
+        font-size: 35px;
+        margin-top: 30px;
+    }
+
+    .top-movers{
+        font-family: Garamond;
+        font-size: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-left: 0;
+        margin-top:50px;
+        border:1px solid black;
+        border-radius: 5px;
+        box-shadow: 20px black;
+    }
+    
+
+    top-movers.h2{
+        text-align: center;
+        margin: auto;
+    }
+
+    .gainers{   
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        color: var(--primary-color);
+        padding: 20px;
+        border: 1px solid rgb(232, 255, 232);
+        border-radius: 10px;
+        box-shadow: black;
+        background-color: beige;
+        margin: 5px;
+
+    }
+
+    .gainer{
+        flex: 1;
+        background-color: cornsilk;
+        border: 2px solid var(--primary-color);
+        border-radius: 10px;
+        box-shadow: black;
+        padding: 20px;
+        margin: 5px;
+
+    }
+
+
+    .losers{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        color: rgb(175, 29, 29);
+        background-color: cornsilk;
+        padding: 20px;
+        margin: 5px;
+        }
+
+    .loser{
+        flex:1;
+        background-color: cornsilk;
+        border: 2px solid red;
+        border-radius: 10px;
+        box-shadow: black;
+        padding: 20px;
+        margin: 5px;
+    }
+
+    .uniformer{
+        color: beige;
+    }
+
+    a{
+        text-decoration: none;
+    }
+
+    </style>
+
+{%endblock%}

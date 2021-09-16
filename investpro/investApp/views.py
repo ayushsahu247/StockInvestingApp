@@ -6,6 +6,7 @@ from .models import *
 import decimal
 import numpy as np
 from nsetools import Nse
+from django.core.cache import cache
 
 nse=Nse()
 
@@ -29,56 +30,52 @@ def current_price(symbol):
 
 
 # Create your views here.
-def home(request):
 
-	top_gainers = nse.get_top_gainers()[:5]
+def top_movers(request):
 
-	top_losers = nse.get_top_losers()[:5]
-	if not market_open():   #Market is close, so use Close Price, else, use lastPrice
-		print("Market closed")
-		print("Market closed")
-		print("Market closed")
-		print("Market closed")
-		print("Market closed")
-		print("Market closed")
-		top_gainer_info = [ [stock['symbol'],
-			stock['ltp'] ]
-			for stock in top_gainers[:5] ]  
-
-		top_loser_info = [[stock['symbol'], 
-			stock['ltp'] ]
-			for stock in top_losers[:5] ]  
-
+	if cache.get('top_moversCache'):
+		context = cache.get('top_moversCache')
 	else:
-		print("Market open")
-		print("Market open")
-		print("Market open")
-		print("Market open")
-		print("Market open")
-		print("Market open")
-		top_gainer_info = [[stock['symbol'],
-		    nse.get_quote(stock['symbol'])['companyName'],
-		    nse.get_quote(stock['symbol'])['lastPrice'] ]
-		    for stock in top_gainers[:5] ]  
-		top_loser_info = [[stock['symbol'],
-		    nse.get_quote(stock['symbol'])['companyName'],
-		    nse.get_quote(stock['symbol'])['lastPrice'] ]
-		    for stock in top_losers[:5] ]  
-		# top_gainer_info = [['TATASTEEL', 'Tata Steel Limited', 1519.4],
-		# 	['BAJFINANCE', 'Bajaj Finance Limited', 6377.15],
-		# 	['M&M', 'Mahindra & Mahindra Limited', 799.3],
-		# 	['BRITANNIA', 'Britannia Industries Limited', 3655.3],
-		# 	['IOC', 'Indian Oil Corporation Limited', 107.2]]
 
-		# top_loser_info = [['TATASTEEL', 'Tata Steel Limited', 1519.4],
-		# 	['BAJFINANCE', 'Bajaj Finance Limited', 6377.15],
-		# 	['M&M', 'Mahindra & Mahindra Limited', 799.3],
-		# 	['BRITANNIA', 'Britannia Industries Limited', 3655.3],
-		# 	['IOC', 'Indian Oil Corporation Limited', 107.2]]
+		top_gainers = nse.get_top_gainers()[:5]
+
+		top_losers = nse.get_top_losers()[:5]
+		if not market_open():   #Market is close, so use Close Price, else, use lastPrice
+			top_gainer_info = [ [stock['symbol'],
+				stock['ltp'] ]
+				for stock in top_gainers[:5] ]  
+
+			top_loser_info = [[stock['symbol'], 
+				stock['ltp'] ]
+				for stock in top_losers[:5] ]  
+
+		else:
+			top_gainer_info = [[stock['symbol'],
+				nse.get_quote(stock['symbol'])['companyName'],
+				nse.get_quote(stock['symbol'])['lastPrice'] ]
+				for stock in top_gainers[:5] ]  
+			top_loser_info = [[stock['symbol'],
+				nse.get_quote(stock['symbol'])['companyName'],
+				nse.get_quote(stock['symbol'])['lastPrice'] ]
+				for stock in top_losers[:5] ]  
+			# top_gainer_info = [['TATASTEEL', 'Tata Steel Limited', 1519.4],
+			# 	['BAJFINANCE', 'Bajaj Finance Limited', 6377.15],
+			# 	['M&M', 'Mahindra & Mahindra Limited', 799.3],
+			# 	['BRITANNIA', 'Britannia Industries Limited', 3655.3],
+			# 	['IOC', 'Indian Oil Corporation Limited', 107.2]]
+
+			# top_loser_info = [['TATASTEEL', 'Tata Steel Limited', 1519.4],
+			# 	['BAJFINANCE', 'Bajaj Finance Limited', 6377.15],
+			# 	['M&M', 'Mahindra & Mahindra Limited', 799.3],
+			# 	['BRITANNIA', 'Britannia Industries Limited', 3655.3],
+			# 	['IOC', 'Indian Oil Corporation Limited', 107.2]]
+		context = {'top_gainers':top_gainer_info, 'top_losers':top_loser_info}
+		cache.set('top_moversCache', context, 300)
+	return render(request, 'top_movers.html', context)
 
 
-
-	return render(request, 'home.html', {'top_gainers':top_gainer_info, 'top_losers':top_loser_info})
+def home(request):
+	return render(request, 'home.html')
 
 def register(request):
 	if request.method == 'POST':
@@ -134,10 +131,6 @@ def stockinfo(request, symbol):  #this page will have the buy/sell functionality
 	stock = Stock.objects.get(symbol=symbol)
 	investor = Investor.objects.get(user_id=request.user.id)
 	if Investment.objects.filter(investor=investor, stock=stock).exists():
-		print("Exist, it does")
-		print("Exist, it does")
-		print("Exist, it does")
-		print("Exist, it does")
 		investment = Investment.objects.get(investor=investor, stock=stock)
 		print('investment exists ', investment)
 	else:
@@ -241,21 +234,28 @@ def sell(request, symbol):
 		
 @login_required(redirect_field_name='/login')
 def portfolio(request):
-	investments = Investment.objects.filter(investor_id = request.user.id)
-	if market_open():
-		stocks = { investment : nse.get_stock_quote(investment.stock.symbol)['lastPrice'] for investment in investments}  
-		#this dictionary then has
-		# the stock object as its key and the current price as its value.
-	else:
-		stocks = { investment : np.around(list(np.array( [ float(nse.get_quote(investment.stock.symbol)['closePrice']) ]*2)*np.array([1, float(investment.n_shares)]))+[float(investment.avg_price)*float(investment.n_shares)], 2) for investment in investments}
-		# storing in 0th index the closePrice (current price) and in the 1st index currentPrice*n_shares
-		# in the 2nd index avg_price * n_shares
-		# The dictionary stocks then looks like
-		# {investment_object : [currentPrice, currentValue, investedValue]}
 
-	invested_value = round(sum([ investment.avg_price*investment.n_shares for investment in investments]), 2)
-	current_value = round( float (sum([ np.around(current_price(investment.stock.symbol)*investment.n_shares,2) for investment in investments])), 2)
-	context = {'investments':stocks, 'investor':Investor.objects.get(user_id=request.user.id), 'invested_value':invested_value, 'current_value':current_value}
+	context = {}
+	if cache.get('portfolioCache'):
+		context = cache.get('portfolioCache')
+	else:
+
+		investments = Investment.objects.filter(investor_id = request.user.id)
+		if market_open():
+			stocks = { investment : nse.get_stock_quote(investment.stock.symbol)['lastPrice'] for investment in investments}  
+			#this dictionary then has
+			# the stock object as its key and the current price as its value.
+		else:
+			stocks = { investment : np.around(list(np.array( [ float(nse.get_quote(investment.stock.symbol)['closePrice']) ]*2)*np.array([1, float(investment.n_shares)]))+[float(investment.avg_price)*float(investment.n_shares)], 2) for investment in investments}
+			# storing in 0th index the closePrice (current price) and in the 1st index currentPrice*n_shares
+			# in the 2nd index avg_price * n_shares
+			# The dictionary stocks then looks like
+			# {investment_object : [currentPrice, currentValue, investedValue]}
+
+		invested_value = round(sum([ investment.avg_price*investment.n_shares for investment in investments]), 2)
+		current_value = round( float (sum([ np.around(current_price(investment.stock.symbol)*investment.n_shares,2) for investment in investments])), 2)
+		context = {'investments':stocks, 'investor':Investor.objects.get(user_id=request.user.id), 'invested_value':invested_value, 'current_value':current_value}
+		cache.set('portfolioCache', context, 300)
 	return render(request, 'portfolio.html', context) 
 	# then, stocks has investment object as the key, and currentPrice as the value
 	# so, company name can be accessed (in jinja) as investments.stock.companyName
