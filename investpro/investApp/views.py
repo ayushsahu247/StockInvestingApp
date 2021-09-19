@@ -8,7 +8,6 @@ import numpy as np
 from nsetools import Nse
 from django.core.cache import cache
 import time
-import asyncio
 
 
 nse=Nse()
@@ -105,21 +104,23 @@ def login(request):
 
 	return render(request, 'login.html')
 
-
+@login_required(login_url='login')
 def logout(request):
 	auth.logout(request)
-	return redirect('/login')
+	return redirect('/')
 
 
 
 all_stock_codes = nse.get_stock_codes()
 
 del all_stock_codes['SYMBOL']
-@login_required(redirect_field_name='/login')
+
+@login_required(login_url='login')
 def all_stocks(request):
 	return render(request, 'all_stocks.html', {'all_stock_codes':all_stock_codes})
 
-@login_required(redirect_field_name='/login')
+
+@login_required(login_url='login')
 def stockinfo(request, symbol):  #this page will have the buy/sell functionality. Not now, but shortly.
 	stock = Stock.objects.get(symbol=symbol)
 	investor = Investor.objects.get(user_id=request.user.id)
@@ -135,7 +136,7 @@ def stockinfo(request, symbol):  #this page will have the buy/sell functionality
 		price = nse.get_quote(symbol)['closePrice']
 	return render(request, 'stock.html', {'stock':stock, 'price':price, 'investment':investment})
 
-@login_required(redirect_field_name='/login')
+@login_required(login_url='login')
 def buy(request, symbol):
 	stock = Stock.objects.get(symbol=symbol)
 	investor = Investor
@@ -182,8 +183,7 @@ def buy(request, symbol):
 		return redirect('/notifications')
 	
 	return render(request, 'buy.html', {'stock':stock, 'price':currentPrice})
-
-@login_required(redirect_field_name='/login')
+@login_required(login_url='login')
 def sell(request, symbol):
 	stock = Stock.objects.get(symbol=symbol)
 	if request.method=='POST':
@@ -244,45 +244,47 @@ def portfolio_stocks_data(investments):
 
 	return stocks
 
-def portfolio_computation(request, investments, stocks):
+def portfolio_computation(request, investments, stocks, user_id):
+	print(f"started invested_value at {time.strftime('%X')}")
 	invested_value = round(sum([ investment.avg_price*investment.n_shares for investment in investments]), 2)  #input is investments
-	current_value = round((sum([ np.around(current_price(investment.stock.symbol)*investment.n_shares, 2) for investment in investments])), 2)  #input investments
-	context = {'investments':stocks, 'investor':Investor.objects.get(user_id=request.user.id), 'invested_value':invested_value, 'current_value':current_value}
+	print(f"started current_value at {time.strftime('%X')}")
+	current_value = round((sum([(current_price(investment.stock.symbol)*investment.n_shares) for investment in investments])), 2)  #input investments
+	print(f"started context at {time.strftime('%X')}")
+	context = {'investments':stocks, 'investor':Investor.objects.get(user_id=user_id), 'invested_value':invested_value, 'current_value':current_value}
+	print(f"finished context at {time.strftime('%X')}")
 
 	return (context)
 
-@login_required(redirect_field_name='/login')
+@login_required(login_url='login')
 def portfolio(request):
 
 	context = {}
 	if cache.get('portfolioCache'):
 		context = cache.get('portfolioCache')
 	else:
-
-		investments = Investment.objects.filter(investor_id = request.user.id)
+		user_id = request.user.id
+		investments = Investment.objects.filter(investor_id = user_id)
 		print(f"started pulling portfolio data at {time.strftime('%X')}")
 		
 		stocks = portfolio_stocks_data(investments=investments)
 
 		print(f"finished pulling portfolio data at {time.strftime('%X')}")
-		context = portfolio_computation(request, investments=investments, stocks = stocks)
+		context = portfolio_computation(request, investments=investments, stocks = stocks, user_id = user_id)
 		
-		cache.set('portfolioCache', context, 1)
+		cache.set('portfolioCache', context, 20)
 		print(f"done with computations at {time.strftime('%X')}")
 	return render(request, 'portfolio.html', context) 
 	# then, stocks has investment object as the key, and currentPrice as the value
 	# so, company name can be accessed (in jinja) as investments.stock.companyName
 	# investment.n_shares, investment.avg_price
 	# call it as: for investment, stockPrice in investments.items
-
-@login_required(redirect_field_name='/login')
+@login_required(login_url='login')
 def notifications(request):
 	pass
 	records = Record.objects.filter(investor_id=request.user.id)
 	return render(request, 'notifications.html', {'records':records[::-1]})
 
-
-@login_required(redirect_field_name='/login')
+@login_required(login_url='login')
 def profile(request):
 	investor = Investor.objects.get(user_id=request.user.id)
 	return render(request, 'profile.html', {'investor':investor})
