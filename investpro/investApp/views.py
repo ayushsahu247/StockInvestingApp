@@ -7,6 +7,9 @@ import decimal
 import numpy as np
 from nsetools import Nse
 from django.core.cache import cache
+import time
+import asyncio
+
 
 nse=Nse()
 
@@ -36,27 +39,17 @@ def top_movers(request):
 	if cache.get('top_moversCache'):
 		context = cache.get('top_moversCache')
 	else:
-
+		print(f"started pulling mover data at {time.strftime('%X')}")
 		top_gainers = nse.get_top_gainers()[:5]
-
 		top_losers = nse.get_top_losers()[:5]
-		if not market_open():   #Market is close, so use Close Price, else, use lastPrice
+		print(f"finished pulling mover data at {time.strftime('%X')}")
+		if True:   #Market is close, so use Close Price, else, use lastPrice
 			top_gainer_info = [ [stock['symbol'],
 				stock['ltp'] ]
 				for stock in top_gainers[:5] ]  
 
 			top_loser_info = [[stock['symbol'], 
 				stock['ltp'] ]
-				for stock in top_losers[:5] ]  
-
-		else:
-			top_gainer_info = [[stock['symbol'],
-				nse.get_quote(stock['symbol'])['companyName'],
-				nse.get_quote(stock['symbol'])['lastPrice'] ]
-				for stock in top_gainers[:5] ]  
-			top_loser_info = [[stock['symbol'],
-				nse.get_quote(stock['symbol'])['companyName'],
-				nse.get_quote(stock['symbol'])['lastPrice'] ]
 				for stock in top_losers[:5] ]  
 			# top_gainer_info = [['TATASTEEL', 'Tata Steel Limited', 1519.4],
 			# 	['BAJFINANCE', 'Bajaj Finance Limited', 6377.15],
@@ -70,7 +63,7 @@ def top_movers(request):
 			# 	['BRITANNIA', 'Britannia Industries Limited', 3655.3],
 			# 	['IOC', 'Indian Oil Corporation Limited', 107.2]]
 		context = {'top_gainers':top_gainer_info, 'top_losers':top_loser_info}
-		cache.set('top_moversCache', context, 300)
+		cache.set('top_moversCache', context, 3)
 	return render(request, 'top_movers.html', context)
 
 
@@ -206,7 +199,7 @@ def sell(request, symbol):
 
 			if int(investment.n_shares) < int(n_sell):
 				messages.info(request, 'You cannot sell more shares than you possess.')
-				return render(request, 'err_insufficient_shares.html', {'shares_owned':investment.n_shares, 'n_sell':n_sell})
+				return render(request, 'err_insufficient_shares.html', {'shares_owned':investment.n_shares, 'n_sell':n_sell, 'stock':investment.stock.symbol})
 			else:
 				if market_open():
 					currentPrice = nse.get_quote(symbol)['lastPrice']	
@@ -232,6 +225,32 @@ def sell(request, symbol):
 	
 	return render(request, 'sell.html', {'stock':stock})
 		
+
+def portfolio_stocks_data(investments):
+	if market_open():
+		stocks = { investment : np.around(
+			list(np.array([float(nse.get_quote(investment.stock.symbol)['lastPrice']) ]*2)*np.array([1, float(investment.n_shares)]))
+			+[float(investment.avg_price)*float(investment.n_shares)],
+			2) 
+			for investment in investments}
+		#this dictionary then has
+		# the stock object as its key and the current price as its value.
+	else:
+		stocks = { investment : np.around(list(np.array( [ float(nse.get_quote(investment.stock.symbol)['closePrice']) ]*2)*np.array([1, float(investment.n_shares)]))+[float(investment.avg_price)*float(investment.n_shares)], 2) for investment in investments}
+		# storing in 0th index the closePrice (current price) and in the 1st index currentPrice*n_shares
+		# in the 2nd index avg_price * n_shares
+		# The dictionary stocks then looks like
+		# {investment_object : [currentPrice, currentValue, investedValue]}
+
+	return stocks
+
+def portfolio_computation(request, investments, stocks):
+	invested_value = round(sum([ investment.avg_price*investment.n_shares for investment in investments]), 2)  #input is investments
+	current_value = round((sum([ np.around(current_price(investment.stock.symbol)*investment.n_shares, 2) for investment in investments])), 2)  #input investments
+	context = {'investments':stocks, 'investor':Investor.objects.get(user_id=request.user.id), 'invested_value':invested_value, 'current_value':current_value}
+
+	return (context)
+
 @login_required(redirect_field_name='/login')
 def portfolio(request):
 
@@ -241,21 +260,15 @@ def portfolio(request):
 	else:
 
 		investments = Investment.objects.filter(investor_id = request.user.id)
-		if market_open():
-			stocks = { investment : nse.get_stock_quote(investment.stock.symbol)['lastPrice'] for investment in investments}  
-			#this dictionary then has
-			# the stock object as its key and the current price as its value.
-		else:
-			stocks = { investment : np.around(list(np.array( [ float(nse.get_quote(investment.stock.symbol)['closePrice']) ]*2)*np.array([1, float(investment.n_shares)]))+[float(investment.avg_price)*float(investment.n_shares)], 2) for investment in investments}
-			# storing in 0th index the closePrice (current price) and in the 1st index currentPrice*n_shares
-			# in the 2nd index avg_price * n_shares
-			# The dictionary stocks then looks like
-			# {investment_object : [currentPrice, currentValue, investedValue]}
+		print(f"started pulling portfolio data at {time.strftime('%X')}")
+		
+		stocks = portfolio_stocks_data(investments=investments)
 
-		invested_value = round(sum([ investment.avg_price*investment.n_shares for investment in investments]), 2)
-		current_value = round( float (sum([ np.around(current_price(investment.stock.symbol)*investment.n_shares,2) for investment in investments])), 2)
-		context = {'investments':stocks, 'investor':Investor.objects.get(user_id=request.user.id), 'invested_value':invested_value, 'current_value':current_value}
-		cache.set('portfolioCache', context, 300)
+		print(f"finished pulling portfolio data at {time.strftime('%X')}")
+		context = portfolio_computation(request, investments=investments, stocks = stocks)
+		
+		cache.set('portfolioCache', context, 1)
+		print(f"done with computations at {time.strftime('%X')}")
 	return render(request, 'portfolio.html', context) 
 	# then, stocks has investment object as the key, and currentPrice as the value
 	# so, company name can be accessed (in jinja) as investments.stock.companyName

@@ -2,15 +2,39 @@
 
 {%block content%}
 
-<div class="err">Error: Insufficient Shares</div>
-You do not have {{n_sell}} shares in your possession.
-
+<div class="err-container">
+    <div class="err"> <h4>Error: Insufficient Shares</h4> </div>
+    <div class="err-txt">You do not have {{n_sell}} shares in your possession.<br>
+        You currently own {{shares_owned}} shares of {{stock}}.</div>
+    
+    <a href="/stocks/{{stock}}/sell" class="back">Go Back</a>
+    </div>
 
 <style type="text/css">
+    .err-container{
+        height: 300px;
+    }
     .err{
-        font-size: 20;
+        margin: auto;
+        font-weight: 300;
+        font-size: 30;
         color: red;
     }
+
+    .err-txt{
+        font-size: 30;
+    }
+
+    .back{
+        display: inline;
+        border-radius: 20px;
+        background-color: blueviolet;
+        color: white;
+        padding: 20px;
+        position: absolute;
+        top:100px;
+    }
+
 </style>
 
 {%endblock%}
