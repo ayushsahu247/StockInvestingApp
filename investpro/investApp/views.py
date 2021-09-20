@@ -228,15 +228,35 @@ def sell(request, symbol):
 
 def portfolio_stocks_data(investments):
 	if market_open():
-		stocks = { investment : np.around(
-			list(np.array([float(nse.get_quote(investment.stock.symbol)['lastPrice']) ]*2)*np.array([1, float(investment.n_shares)]))
-			+[float(investment.avg_price)*float(investment.n_shares)],
-			2) 
-			for investment in investments}
+		if cache.get('prices'):
+			prices = cache.get('prices')
+			stocks = { investment : np.around(
+				list(np.array([float(prices[investment.stock.symbol]) ]*2)*np.array([1, float(investment.n_shares)]))
+				+[float(investment.avg_price)*float(investment.n_shares)],
+				2) 
+				for investment in investments}
+		else:
+			stocks = { investment : np.around(
+				list(np.array([float(0) ]*2)*np.array([1, float(investment.n_shares)]))
+				+[float(investment.avg_price)*float(investment.n_shares)],
+				2) 
+				for investment in investments}
 		#this dictionary then has
 		# the stock object as its key and the current price as its value.
 	else:
-		stocks = { investment : np.around(list(np.array( [ float(nse.get_quote(investment.stock.symbol)['closePrice']) ]*2)*np.array([1, float(investment.n_shares)]))+[float(investment.avg_price)*float(investment.n_shares)], 2) for investment in investments}
+		if cache.get('prices'):
+			prices = cache.get('prices')
+			stocks = { investment : np.around(
+				list(np.array([float(prices[investment.stock.symbol]) ]*2)*np.array([1, float(investment.n_shares)]))
+				+[float(investment.avg_price)*float(investment.n_shares)],
+				2) 
+				for investment in investments}
+		else:
+			stocks = { investment : np.around(
+				list(np.array([float(0) ]*2)*np.array([1, float(investment.n_shares)]))
+				+[float(investment.avg_price)*float(investment.n_shares)],
+				2) 
+				for investment in investments}
 		# storing in 0th index the closePrice (current price) and in the 1st index currentPrice*n_shares
 		# in the 2nd index avg_price * n_shares
 		# The dictionary stocks then looks like
@@ -248,7 +268,12 @@ def portfolio_computation(request, investments, stocks, user_id):
 	print(f"started invested_value at {time.strftime('%X')}")
 	invested_value = round(sum([ investment.avg_price*investment.n_shares for investment in investments]), 2)  #input is investments
 	print(f"started current_value at {time.strftime('%X')}")
-	current_value = round((sum([(current_price(investment.stock.symbol)*investment.n_shares) for investment in investments])), 2)  #input investments
+	if cache.get('prices'):
+		prices = cache.get('prices')
+		current_value = round((sum([(prices[investment.stock.symbol]*investment.n_shares) for investment in investments])), 2)
+	else:
+		current_value = 0	
+		# current_value = round((sum([(current_price(investment.stock.symbol)*investment.n_shares) for investment in investments])), 2)  #input investments
 	print(f"started context at {time.strftime('%X')}")
 	context = {'investments':stocks, 'investor':Investor.objects.get(user_id=user_id), 'invested_value':invested_value, 'current_value':current_value}
 	print(f"finished context at {time.strftime('%X')}")
@@ -265,10 +290,10 @@ def portfolio(request):
 		user_id = request.user.id
 		investments = Investment.objects.filter(investor_id = user_id)
 		print(f"started pulling portfolio data at {time.strftime('%X')}")
-		
 		stocks = portfolio_stocks_data(investments=investments)
-
 		print(f"finished pulling portfolio data at {time.strftime('%X')}")
+
+
 		context = portfolio_computation(request, investments=investments, stocks = stocks, user_id = user_id)
 		
 		cache.set('portfolioCache', context, 20)
