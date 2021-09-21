@@ -4,21 +4,37 @@ import time
 from time import sleep
 from nsetools import Nse
 from django.core.cache import cache
+from .models import *
 nse = Nse()
 
 @shared_task
 def compute_portfolio_data():
     prices = update_current_prices()
-    cache.set('prices', prices, 9000)
+    cache.set('prices', prices, 60)
     return None
 
+def market_open():
+	stock = nse.get_quote('infy')
+	if stock['closePrice']!=0.0:
+		market_status = False
+		return False
+	else:
+		market_status = True
+		return True
 
 def current_price(sym):
-    return nse.get_quote(sym)['closePrice']
+    if market_open():
+        return nse.get_quote(sym)['lastPrice']
+    else:
+        return nse.get_quote(sym)['closePrice']
 
 def update_current_prices():
+    while not cache.get('investments'):
+        sleep(5)
+    investments = cache.get('investments')
+    investment_list = [ investment.stock.symbol for investment in investments]
     print(f"started pulling price data at {time.strftime('%X')}")
-    syms = list(nse.get_stock_codes().keys())[1:425]
+    syms = investment_list
     prices = {}
     for i in range (len(syms)):
         try:

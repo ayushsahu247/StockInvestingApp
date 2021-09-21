@@ -13,7 +13,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'price-update':{
         'task':'investApp.tasks.compute_portfolio_data',
-        'schedule':9000,
+        'schedule':60,
     }
 }
 

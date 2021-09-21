@@ -67,6 +67,20 @@ def top_movers(request):
 
 
 def home(request):
+	print("Home activated")
+	if request.user.is_authenticated:
+		cache.set('prices', None) 
+		investor = Investor.objects.get(user_id=request.user.id)
+		investments = Investment.objects.filter(investor=investor)
+		print("*****************************")
+		print("Uploading investment objects in cache")
+		cache.set('investments', investments)
+		print("Investments cached sucessfully.")
+		print("*****************************")
+	else:
+		print("*****************************")
+		print("User unauthenticated")
+		print("*****************************")
 	return render(request, 'home.html')
 
 def register(request):
@@ -107,7 +121,7 @@ def login(request):
 @login_required(login_url='login')
 def logout(request):
 	auth.logout(request)
-	return redirect('/')
+	return render(request, 'home.html')
 
 
 
@@ -180,6 +194,12 @@ def buy(request, symbol):
 			investment.save()
 			investor.save()
 			order_message.save()
+			try:
+				prices = cache.get('prices')
+				prices['{investment.stock.symbol}':currentPrice]
+				cache.set('prices', prices)
+			except:
+				print('This buy could not be cached')
 		return redirect('/notifications')
 	
 	return render(request, 'buy.html', {'stock':stock, 'price':currentPrice})
@@ -225,6 +245,7 @@ def sell(request, symbol):
 	
 	return render(request, 'sell.html', {'stock':stock})
 		
+
 
 def portfolio_stocks_data(investments):
 	if market_open():
@@ -296,7 +317,7 @@ def portfolio(request):
 
 		context = portfolio_computation(request, investments=investments, stocks = stocks, user_id = user_id)
 		
-		cache.set('portfolioCache', context, 20)
+		cache.set('portfolioCache', context, 5)
 		print(f"done with computations at {time.strftime('%X')}")
 	return render(request, 'portfolio.html', context) 
 	# then, stocks has investment object as the key, and currentPrice as the value
