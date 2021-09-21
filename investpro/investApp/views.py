@@ -75,6 +75,7 @@ def home(request):
 		print("*****************************")
 		print("Uploading investment objects in cache")
 		cache.set('investments', investments)
+		print(investments)
 		print("Investments cached sucessfully.")
 		print("*****************************")
 	else:
@@ -194,10 +195,14 @@ def buy(request, symbol):
 			investment.save()
 			investor.save()
 			order_message.save()
+			investment = Investment.objects.get(investor = investor, stock=stock)
+			investments = Investment.objects.filter(investor=investor)
+			cache.set('investments', investments)
 			try:
 				prices = cache.get('prices')
 				prices['{investment.stock.symbol}':currentPrice]
 				cache.set('prices', prices)
+				print(prices)
 			except:
 				print('This buy could not be cached')
 		return redirect('/notifications')
@@ -251,6 +256,7 @@ def portfolio_stocks_data(investments):
 	if market_open():
 		if cache.get('prices'):
 			prices = cache.get('prices')
+			print(prices)
 			stocks = { investment : np.around(
 				list(np.array([float(prices[investment.stock.symbol]) ]*2)*np.array([1, float(investment.n_shares)]))
 				+[float(investment.avg_price)*float(investment.n_shares)],

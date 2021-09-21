@@ -10,7 +10,7 @@ nse = Nse()
 @shared_task
 def compute_portfolio_data():
     prices = update_current_prices()
-    cache.set('prices', prices, 60)
+    cache.set('prices', prices, 15)
     return None
 
 def market_open():
@@ -30,8 +30,9 @@ def current_price(sym):
 
 def update_current_prices():
     while not cache.get('investments'):
-        sleep(5)
+        sleep(0.5)
     investments = cache.get('investments')
+    print('retrieved investments from cache')
     investment_list = [ investment.stock.symbol for investment in investments]
     print(f"started pulling price data at {time.strftime('%X')}")
     syms = investment_list
