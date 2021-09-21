@@ -1,1 +1,2 @@
 September 21, 10:52AM: There is some issue with caching a currently bought stock. The issue is probably in the buy function where I have tried to manipulate the cache.
+September 21, 13:36PM: Solved caching issue. Current release is stable.
