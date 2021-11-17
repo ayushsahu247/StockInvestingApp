@@ -62,7 +62,7 @@ def top_movers(request):
 			# 	['BRITANNIA', 'Britannia Industries Limited', 3655.3],
 			# 	['IOC', 'Indian Oil Corporation Limited', 107.2]]
 		context = {'top_gainers':top_gainer_info, 'top_losers':top_loser_info}
-		cache.set('top_moversCache', context, 3)
+		cache.set('top_moversCache', context, 30)
 	return render(request, 'top_movers.html', context)
 
 
