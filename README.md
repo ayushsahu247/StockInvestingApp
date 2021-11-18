@@ -54,3 +54,8 @@ The general framework is -
 theValue = cache.get('theKey') 
 
 These commands are used as per the situation for storage and access of data.
+
+Architecture - 
+I'm using the nsetools api to get real time NSE (National Stock Exchage) data. The logic of updating databases on buying and selling of stocks is just basic arithemetic. The real challenge was optimization. Calling the nsetools api everytime for relevant data bottlenecked the system and accounted for nearly 100% of the delay. This happened when calling for the following data - top movers data and current stock prices, which means, the two most relevant pages, top_movers, and portfolio took too much time to load (30-40 seconds). 
+
+Here's how I solved this- I used Redis as the caching tech, and instead of calling the data from the api over and over again, I cached them for a set time, thereby calling it from the database, which is much faster. One problem still remained, that once it is cached, it loads again in no time, but for the first time, it has to pull the data from the api. So I used Celery to set up a periodic task to fetch stock prices in the current user's portfolio every 15 seconds. Hence, when the user opens the portfolio page, it's likely to load instantly which is a massive upgrade, and maximum delay from the live price would be only 15 seconds. This is how I used caching to optimize the app to be exponentially faster than before.
